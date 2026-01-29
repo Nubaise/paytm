@@ -1,7 +1,14 @@
-// backend/db.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// Create a Schema for Users
+// Connect to MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/paytm")
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error", err));
+
+/* =========================
+   USER SCHEMA
+========================= */
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -31,9 +38,32 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// Create a model from the schema
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
+
+/* =========================
+   ACCOUNT SCHEMA
+========================= */
+
+const accountSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        unique: true
+    },
+    balance: {
+        type: Number,
+        required: true
+    }
+});
+
+const Account = mongoose.model("Account", accountSchema);
+
+/* =========================
+   EXPORT
+========================= */
 
 module.exports = {
-	User
+    User,
+    Account
 };
